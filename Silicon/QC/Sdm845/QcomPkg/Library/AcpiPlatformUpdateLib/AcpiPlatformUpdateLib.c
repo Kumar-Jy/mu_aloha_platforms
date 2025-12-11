@@ -11,13 +11,11 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
 
-#include <Library/MemoryMapHelperLib.h>
 #include <Library/RFSProtectionLib.h>
 
 #include <Protocol/EFIChipInfo.h>
 #include <Protocol/EFIPlatformInfo.h>
 #include <Protocol/EFISmem.h>
-#include <Protocol/EFIClock.h>
 
 VOID
 PlatformUpdateAcpiTables(VOID)
@@ -29,22 +27,14 @@ PlatformUpdateAcpiTables(VOID)
   ARM_MEMORY_REGION_DESCRIPTOR_EX TGCMRegion;
 
   UINT32                              SOID  = 0;
-  UINT32                              STOR  = 0x1;
   UINT32                              SIDV  = 0;
   UINT16                              SDFE  = 0;
   UINT16                              SIDM  = 0;
-  UINT32                              SUFS  = 0xFFFFFFFF;
-  UINT32                              PUS3  = 0x0;
-  UINT32                              SUS3  = 0xFFFFFFFF;
-//  UINT32                             *pSIDT = (UINT32 *)0x784130;
-//  UINT32                              SIDT  = (*pSIDT & 0xFF00000) >> 20;
   UINT32                              SOSN1 = 0;
   UINT32                              SOSN2 = 0;
   UINT32                              TPMA  = 0x1;
   UINT32                              TDTV  = 0x6654504D;
   UINT64                              SOSI  = 0;
-  UINT32                              PRP0  = 0;
-  UINT32                              PRP1  = 0;
   CHAR8                               SIDS[EFICHIPINFO_MAX_ID_LENGTH] = {0};
   EFI_PLATFORMINFO_PLATFORM_INFO_TYPE PlatformInfo;
   UINT32                              RMTB = 0;
@@ -89,7 +79,7 @@ PlatformUpdateAcpiTables(VOID)
     return;
   }
 
-  mBoardProtocol->GetChipId(mBoardProtocol, &SOID);
+  mBoardProtocol->GetChipId(mBoardProtocol, (EFIChipInfoIdType *)&SOID);
   mBoardProtocol->GetChipVersion(mBoardProtocol, &SIDV);
   mBoardProtocol->GetChipFamily(mBoardProtocol, (EFIChipInfoFamilyType *)&SDFE);
   mBoardProtocol->GetModemSupport(mBoardProtocol, (EFIChipInfoModemType *)&SIDM);
@@ -119,15 +109,15 @@ PlatformUpdateAcpiTables(VOID)
   }
 
   if (!EFI_ERROR(LocateMemoryMapAreaByName("ADSP_EFS", &ADSPEFSRegion))) {
-    RFMB = ADSPEFSRegion.Address + ADSPEFSRegion.Length / 2;
-    RFMS = ADSPEFSRegion.Length / 2;
-    RFAB = ADSPEFSRegion.Address;
-    RFAS = ADSPEFSRegion.Length / 2;
+    RFMB = (UINT32)ADSPEFSRegion.Address + (UINT32)ADSPEFSRegion.Length / 2;
+    RFMS = (UINT32)ADSPEFSRegion.Length / 2;
+    RFAB = (UINT32)ADSPEFSRegion.Address;
+    RFAS = (UINT32)ADSPEFSRegion.Length / 2;
   }
 
   if (!EFI_ERROR(LocateMemoryMapAreaByName("TGCM", &TGCMRegion))) {
-    TCMA = TGCMRegion.Address;
-    TCML = TGCMRegion.Length;
+    TCMA = (UINT32)TGCMRegion.Address;
+    TCML = (UINT32)TGCMRegion.Length;
   } else {
     TCMA = 0xDEADBEEF;
     TCML = 0xBEEFDEAD;
@@ -144,16 +134,11 @@ PlatformUpdateAcpiTables(VOID)
   DEBUG((EFI_D_WARN, "Platform Subtype: %d\n", PLST));
 
   UpdateNameAslCode(SIGNATURE_32('S', 'O', 'I', 'D'), &SOID, 4);
-  UpdateNameAslCode(SIGNATURE_32('S', 'T', 'O', 'R'), &STOR, 4);
   UpdateNameAslCode(SIGNATURE_32('S', 'I', 'D', 'V'), &SIDV, 4);
   UpdateNameAslCode(SIGNATURE_32('S', 'V', 'M', 'J'), &SVMJ, 2);
   UpdateNameAslCode(SIGNATURE_32('S', 'V', 'M', 'I'), &SVMI, 2);
   UpdateNameAslCode(SIGNATURE_32('S', 'D', 'F', 'E'), &SDFE, 2);
   UpdateNameAslCode(SIGNATURE_32('S', 'I', 'D', 'M'), &SIDM, 2);
-  UpdateNameAslCode(SIGNATURE_32('S', 'U', 'F', 'S'), &SUFS, 4);
-  UpdateNameAslCode(SIGNATURE_32('P', 'U', 'S', '3'), &PUS3, 4);
-  UpdateNameAslCode(SIGNATURE_32('S', 'U', 'S', '3'), &SUS3, 4);
-////  UpdateNameAslCode(SIGNATURE_32('S', 'I', 'D', 'T'), &SIDT, 4);
   UpdateNameAslCode(SIGNATURE_32('S', 'O', 'S', 'N'), &SOSN, 8);
   UpdateNameAslCode(SIGNATURE_32('P', 'L', 'S', 'T'), &PLST, 4);
   UpdateNameAslCode(SIGNATURE_32('R', 'M', 'T', 'B'), &RMTB, 4);
@@ -167,7 +152,5 @@ PlatformUpdateAcpiTables(VOID)
   UpdateNameAslCode(SIGNATURE_32('T', 'C', 'M', 'A'), &TCMA, 4);
   UpdateNameAslCode(SIGNATURE_32('T', 'C', 'M', 'L'), &TCML, 4);
   UpdateNameAslCode(SIGNATURE_32('S', 'O', 'S', 'I'), &SOSI, 8);
-  UpdateNameAslCode(SIGNATURE_32('P', 'R', 'P', '0'), &PRP0, 4);
-  UpdateNameAslCode(SIGNATURE_32('P', 'R', 'P', '1'), &PRP1, 4);
   UpdateNameAslCode(SIGNATURE_32('S', 'I', 'D', 'S'), &SIDS, EFICHIPINFO_MAX_ID_LENGTH);
 }

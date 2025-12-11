@@ -4,6 +4,7 @@
 #  Copyright (c) 2014, Linaro Limited. All rights reserved.
 #  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.
 #  Copyright (c) 2018 - 2019, Bingxing Wang. All rights reserved.
+#  Copyright (c) 2025 - 2026, Project Aloha. All rights reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -20,13 +21,13 @@
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17a60000
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x9ff90000
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000      # 128K stack
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x9ffb0000
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00020000      # 128K stack
   gEmbeddedTokenSpaceGuid.PcdInterruptBaseAddress|0x09bc0000
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|44
 
-  gAndromedaPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Snapdragon (TM) 850 @ 2.80 GHz"
-  gAndromedaPkgTokenSpaceGuid.PcdSmbiosProcessorRetailModel|"SDM850"
+  gAndromedaPkgTokenSpaceGuid.PcdSmbiosProcessorModel|"Snapdragon (TM) 845 @ 2.80 GHz"
+  gAndromedaPkgTokenSpaceGuid.PcdSmbiosProcessorRetailModel|"SDM845"
 
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|3
@@ -35,9 +36,6 @@
   gAndromedaPkgTokenSpaceGuid.PcdUartSerialBase|0x00A84000
 
 [LibraryClasses.common]
-  # PlatformMemoryMapLib|QcomPkg/Library/PlatformMemoryMapLib/PlatformMemoryMapLib.inf
-  # PlatformConfigurationMapLib|QcomPkg/Library/PlatformConfigurationMapLib/PlatformConfigurationMapLib.inf
-
   PlatformPeiLib|QcomPkg/PlatformPei/PlatformPeiLib.inf
   PlatformPrePiLib|QcomPkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
   AslUpdateLib|AndromedaPkg/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
@@ -47,3 +45,6 @@
   PlatformThemeLib|QcomPkg/Library/PlatformThemeLib/PlatformThemeLib.inf
 
   ConsoleMsgLib|PcBdsPkg/Library/ConsoleMsgLibNull/ConsoleMsgLibNull.inf
+
+[Components.common]
+ AndromedaPkg/Driver/RamPartitionDxe/RamPartitionDxe.inf

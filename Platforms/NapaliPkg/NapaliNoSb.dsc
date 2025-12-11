@@ -1,13 +1,13 @@
-## @file
 #
-#  Copyright (c) 2011-2015, ARM Limited. All rights reserved.
+#  Copyright (c) 2011 - 2022, ARM Limited. All rights reserved.
 #  Copyright (c) 2014, Linaro Limited. All rights reserved.
-#  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.
+#  Copyright (c) 2015 - 2020, Intel Corporation. All rights reserved.
 #  Copyright (c) 2018, Bingxing Wang. All rights reserved.
+#  Copyright (c) Microsoft Corporation.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
-##
+#
 
 !ifndef TARGET_DEVICE
   !error "TARGET_DEVICE must be defined"
@@ -20,14 +20,15 @@
 ################################################################################
 [Defines]
   PLATFORM_NAME                  = Napali
-  PLATFORM_GUID                  = b6325ac2-9f3f-4b1d-b129-ac7b35ddde62
+  PACKAGE_NAME                   = $(PLATFORM_NAME)Pkg
+  PLATFORM_GUID                  = b6325ac2-9f3f-4b1d-b129-ac7b35ddde60
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/NapaliPkg
+  OUTPUT_DIRECTORY               = Build/$(PACKAGE_NAME)
   SUPPORTED_ARCHITECTURES        = AARCH64
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = NapaliPkg/Napali.fdf
+  FLASH_DEFINITION               = $(PACKAGE_NAME)/$(PLATFORM_NAME).fdf
   SECURE_BOOT                    = 0
   USE_PHYSICAL_TIMER             = 1
 
@@ -35,8 +36,6 @@
   USE_UART_GENI_FOR_SERIAL_OUTPUT = 0
   USE_UART_DM_FOR_SERIAL_OUTPUT   = 0
   USE_MEMORY_FOR_SERIAL_OUTPUT    = 0
-
-  USE_SIMPLEFBDXE                = 1
 
   DEFAULT_KEYS                   = FALSE
   PK_DEFAULT_FILE                = AndromedaPkg/Include/Resources/SecureBoot/keystore/WOAMSMNILE-PK.der
@@ -66,51 +65,21 @@
   PLATFORM_HAS_GIC_V3_WITHOUT_IRM_FLAG_SUPPORT_ERRATA = 0
   PLATFORM_HAS_PSCI_MEMPROTECT_FAILING_ERRATA         = 1
 
-!include NapaliPkg/Device/$(TARGET_DEVICE)/Defines.dsc.inc
-
-[BuildOptions.common]
-
-GCC:*_*_AARCH64_CC_FLAGS = -DSILICON_PLATFORM=845
-
 [PcdsFixedAtBuild.common]
   # Platform-specific
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0x100000000            # 4GB
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x100000000        # 4GB Size
 
-  gAndromedaPkgTokenSpaceGuid.PcdABLProduct|"napali"
-
-[Components.common]
-  # Graphics Driver
-  !if $(USE_SIMPLEFBDXE) == TRUE
-    AndromedaPkg/Driver/SimpleFbDxe/SimpleFbDxe.inf
-  !endif
-  AndromedaPkg/Driver/GpioButtons/GpioButtons.inf
-
-  # Auto Memory Adder
-  AndromedaPkg/Driver/RamPartitionDxe/RamPartitionDxe.inf
-
-# Device Specific Drivers
-!include NapaliPkg/Device/$(TARGET_DEVICE)/DXE.dsc.inc
+  gAndromedaPkgTokenSpaceGuid.PcdABLProduct|"Napali"
 
 [LibraryClasses.common]
-  # Move PlatformMemoryMapLib to Device/<device>/Library
-  PlatformMemoryMapLib|NapaliPkg/Device/$(TARGET_DEVICE)/Library/PlatformMemoryMapLib/PlatformMemoryMapLib.inf
+  # Notice: PlatformMemoryMapLib was moved to Device/<device>/Library/
+  PlatformMemoryMapLib|$(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/Library/PlatformMemoryMapLib/PlatformMemoryMapLib.inf
 
-  # Move PlatformConfigurationMapLib to Device/<device>/Library
-  PlatformConfigurationMapLib|NapaliPkg/Device/$(TARGET_DEVICE)/Library/PlatformConfigurationMapLib/PlatformConfigurationMapLib.inf
+  # Notice: PlatformConfigurationMapLib was moved to Device/<device>/Library/
+  PlatformConfigurationMapLib|$(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/Library/PlatformConfigurationMapLib/PlatformConfigurationMapLib.inf
 
-
-# Suggest you updating them to your device's dsc.inc.
-#[PcdsDynamicDefault.common]
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1080
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|2248
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|1080
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|2248
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutRow|120 # 94.73
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutColumn|90 # 168.75
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|120 # 94.73
-#  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|90 # 168.75
-
+!include $(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/DXE.dsc.inc
 !include QcomPkg/QcomPkg.dsc.inc
-!include NapaliPkg/Device/$(TARGET_DEVICE)/PcdsFixedAtBuild.dsc.inc
+!include $(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/PcdsFixedAtBuild.dsc.inc
 !include AndromedaPkg/Andromeda.dsc.inc
 !include AndromedaPkg/Frontpage.dsc.inc

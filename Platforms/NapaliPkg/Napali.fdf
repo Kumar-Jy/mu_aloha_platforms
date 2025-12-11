@@ -21,11 +21,11 @@
 ################################################################################
 
 [FD.SDM845_EFI]
-BaseAddress   = 0xCE000000|gArmTokenSpaceGuid.PcdFdBaseAddress #The base address of the FLASH Device.
-Size          = 0x02000000|gArmTokenSpaceGuid.PcdFdSize        #The size in bytes of the FLASH Device
+BaseAddress   = 0x9FC00000|gArmTokenSpaceGuid.PcdFdBaseAddress #The base address of the FLASH Device.
+Size          = 0x00300000|gArmTokenSpaceGuid.PcdFdSize        #The size in bytes of the FLASH Device
 ErasePolarity = 1
-BlockSize     = 0x2000
-NumBlocks     = 0x1000
+BlockSize     = 0x1000
+NumBlocks     = 0x300
 
 ################################################################################
 #
@@ -59,7 +59,7 @@ FV = FVMAIN_COMPACT
 
 [FV.FvMain]
 FvNameGuid         = 631008B0-B2D1-410A-8B49-2C5C4D8ECC7E
-BlockSize          = 0x40
+BlockSize          = 0x1000
 NumBlocks          = 0        # This FV gets compressed so make it just big enough
 FvAlignment        = 8        # FV alignment and FV attributes setting.
 ERASE_POLARITY     = 1
@@ -78,8 +78,8 @@ READ_STATUS        = TRUE
 READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
-  !include NapaliPkg/Device/$(TARGET_DEVICE)/APRIORI.inc
-  !include NapaliPkg/Device/$(TARGET_DEVICE)/DXE.inc
+  !include $(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/APRIORI.inc
+  !include $(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/DXE.inc
 
   # Secure Boot Key Enroll
   INF AndromedaPkg/Driver/SecureBootProvisioningDxe/SecureBootProvisioningDxe.inf
@@ -87,16 +87,13 @@ READ_LOCK_STATUS   = TRUE
   INF EmbeddedPkg/Drivers/VirtualKeyboardDxe/VirtualKeyboardDxe.inf
 
   # BDS
-  INF AndromedaPkg/Driver/RamPartitionDxe/RamPartitionDxe.inf
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
   INF MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
-  INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
+
   # HID Support
   INF HidPkg/HidKeyboardDxe/HidKeyboardDxe.inf
   INF HidPkg/HidMouseAbsolutePointerDxe/HidMouseAbsolutePointerDxe.inf
-  INF HidPkg/UsbKbHidDxe/UsbKbHidDxe.inf
-  INF HidPkg/UsbMouseHidDxe/UsbMouseHidDxe.inf
 
   # Disk IO
   INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
@@ -108,31 +105,29 @@ READ_LOCK_STATUS   = TRUE
   INF AndromedaPkg/Driver/SmBiosTableDxe/SmBiosTableDxe.inf
 
   # ACPI Tables
-  !include NapaliPkg/Include/ACPI.inc
-
-  # DT
-  INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
-  !include NapaliPkg/Include/FDT.inc
+  !include $(PACKAGE_NAME)/Include/ACPI.inc
 
   INF MdeModulePkg/Universal/EsrtFmpDxe/EsrtFmpDxe.inf
 
   !include AndromedaPkg/Frontpage.fdf.inc
 
   FILE FREEFORM = PCD(gMsCorePkgTokenSpaceGuid.PcdRegulatoryGraphicFileGuid) {
-    SECTION RAW = NapaliPkg/Include/Resources/RegulatoryLogos.png
+    SECTION RAW = $(PACKAGE_NAME)/Include/Resources/RegulatoryLogos.png
   }
 
-  INF AndromedaPkg/Driver/GpioButtons/GpioButtons.inf
-
   INF AdvLoggerPkg/AdvancedFileLogger/AdvancedFileLogger.inf
+
   INF ArmPkg/Drivers/ArmGicDxe/ArmGicDxe.inf
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+
   INF FatPkg/EnhancedFatDxe/Fat.inf
-#  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
-#  INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+
+  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbMouseAbsolutePointerDxe/UsbMouseAbsolutePointerDxe.inf
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
@@ -142,6 +137,7 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+#  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
   INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
   INF MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
@@ -150,11 +146,11 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
-#  INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+  INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
-
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
+
   # INF NetworkPkg/ArpDxe/ArpDxe.inf
   # INF NetworkPkg/Dhcp4Dxe/Dhcp4Dxe.inf
   # INF NetworkPkg/Dhcp6Dxe/Dhcp6Dxe.inf
@@ -201,7 +197,7 @@ READ_LOCK_STATUS   = TRUE
 
   FILE FREEFORM = dde58710-41cd-4306-dbfb-3fa90bb1d2dd {
     SECTION UI = "uefiplat.cfg"
-    SECTION RAW = NapaliPkg/Device/$(TARGET_DEVICE)/Binaries/RawFiles/uefiplat.cfg
+    SECTION RAW = $(PACKAGE_NAME)/Device/$(TARGET_DEVICE)/Binaries/RawFiles/uefiplat.cfg
   }
 
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {

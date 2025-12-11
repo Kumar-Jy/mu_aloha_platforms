@@ -36,7 +36,7 @@ EFI_STATUS
 CfgGetCfgInfoString(CHAR8 *Key, CHAR8 *Value, UINTN *ValBuffSize)
 {
   if (AsciiStriCmp(Key, "OsTypeString") == 0) {
-    AsciiStrCpyS(Value, *ValBuffSize, "LA");
+    AsciiStrCpyS(Value, *ValBuffSize, "WP");
     return EFI_SUCCESS;
   }
 
