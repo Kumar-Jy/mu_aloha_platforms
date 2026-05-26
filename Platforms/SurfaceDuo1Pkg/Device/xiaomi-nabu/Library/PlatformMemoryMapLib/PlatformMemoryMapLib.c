@@ -5,7 +5,7 @@ static ARM_MEMORY_REGION_DESCRIPTOR_EX gDeviceMemoryDescriptorEx[] = {
     /* Name               Address     Length      HobOption        ResourceAttribute    ArmAttributes
                                                           ResourceType          MemoryType */
     /* DDR Regions */
-    {"Kernel",            0x80000000, 0x02A00000, AddMem, SYS_MEM, SYS_MEM_CAP, Conv, WRITE_BACK_XN}, /* Added */
+    {"Kernel",            0x80000000, 0x02A00000, AddMem, SYS_MEM, SYS_MEM_CAP, Reserv, WRITE_BACK_XN}, /* Added */
     {"DBI Dump",          0x82A00000, 0x00D22000, NoHob,  MMAP_IO, INITIALIZED, Reserv,   UNCACHED_UNBUFFERED_XN},
     {"HLOS 1",            0x83722000, 0x01FDE000, AddMem, SYS_MEM, SYS_MEM_CAP, BsData, WRITE_BACK_XN},
     {"Hypervisor",        0x85700000, 0x00600000, AddMem, SYS_MEM, SYS_MEM_CAP, Reserv, NS_DEVICE}, /* Added */
