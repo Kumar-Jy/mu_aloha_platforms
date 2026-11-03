@@ -108,6 +108,16 @@ sudo docker run -v $(pwd):/build/ -it mu:v1
 |--------------------------------------|------------------------|-----------------|----------------------------------------------------|
 | Qualcomm Technologies, Inc. QRD845   | qcom-qrd845            | ✅              | None                                               |
 
+#### Xiaomi Devices
+
+| Device                                  | Target name                   | DSDT Support    | Contributors                                       |
+|-----------------------------------------|-------------------------------|-----------------|----------------------------------------------------|
+| Xiaomi Poco F1 (Tianma + Novatek)       | xiaomi-beryllium              | ✅              | None                                               |
+| Xiaomi Poco F1 (EBBG + FocalTech)       | xiaomi-beryllium-ebbg         | ✅              | None                                               |
+| Xiaomi Poco F1 (Tianma + FocalTech)     | xiaomi-beryllium-tianma-fts   | ✅              | None                                               |
+
+> **Note:** The Poco F1 was sold with different panel/touchscreen combinations. Each image only works on the matching variant, so flash the one that matches your device.
+
 
 ### Snapdragon 855/855+/860 (*SM8150*)
 

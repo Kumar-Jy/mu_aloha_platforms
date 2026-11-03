@@ -65,6 +65,9 @@ on:
           - samsung-q2q
           - samsung-winner
           - xiaomi-andromeda
+          - xiaomi-beryllium
+          - xiaomi-beryllium-ebbg
+          - xiaomi-beryllium-tianma-fts
           - xiaomi-cepheus
           - xiaomi-haydn
           - xiaomi-miatoll
